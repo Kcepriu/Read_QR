@@ -1,3 +1,4 @@
+
 import cv2
 from pyzbar import pyzbar
 
@@ -7,10 +8,12 @@ img_name="./IMG/IMG_20201021_150749.jpg"
 # img_name="./IMG/test3.jpg"
 
 img = cv2.imread(img_name)
+
 detector = cv2.QRCodeDetector()
 
 print(img.shape)
 (h, w, d) = img.shape
+
 if h > w:
     img = img[0:h // 5, (7 * w // 10) : w]
     (h, w, d) = img.shape
@@ -23,6 +26,7 @@ else:
 print(img.shape)
 
 retval, straight_qrcod = detector.detect(img)
+
 print(retval, straight_qrcod)
 
 
@@ -40,6 +44,7 @@ print(retval, straight_qrcod)
 # print(data)
 #
 barcodes = pyzbar.decode(img)
+
 for barcode in barcodes:
     barcodeData = barcode.data.decode("utf-8")
     barcodeType = barcode.type

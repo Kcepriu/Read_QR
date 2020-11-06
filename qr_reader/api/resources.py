@@ -1,23 +1,38 @@
 from flask import request
 from flask_restful import Resource
+import tempfile
+import os
+from .scan_ready import ReadyQR
+
+
 
 class QR_Resource(Resource):
-    def get(self, id_files):
-        if id_files:
-            # obj = User.objects.get(id=id_user)
-            # return UsersSchema().dump(obj)
-            pass
+    def __init__(self):
+        self.temp_dir = tempfile.mkdtemp(prefix='qr_ready-prefix_')
+
+    def get(self):
+        return {'Error': 'Not Unique'}
 
     def post(self):
+        image_file = request.files['file']
+        temp_name = next(tempfile._get_candidate_names())
+        file_path = os.path.join(self.temp_dir, temp_name)
+        image_file.save(file_path)
+        qr_r = ReadyQR(file_path)
+        qr_code = qr_r.auto_find_qr_code()
+        if qr_code :
+            return(qr_code)
+        else:
+            return {'result': 'Not Identified'}
+
         # try:
-        #     res = UsersSchema().load(request.get_json())
-        #     obj = User.objects.create(**res)
-        #     return UsersSchema().dump(obj)
-        # except ValidationError as err:
-        #     return {'error': err.messages}
-        # except NotUniqueError:
+        #     image_file = request.files['file']
+        #     temp_name = next(tempfile._get_candidate_names())
+        #     image_file.save(os.path.join(self.temp_dir, temp_name))
+        #     return {'result': 'OK'}
+        #
+        # except:
         #     return {'Error': 'Not Unique'}
-        pass
 
     def put(self):
         return {'Error': 'Not Unique'}
