@@ -1,13 +1,18 @@
 import cv2
 from pyzbar import pyzbar
+import numpy as np
 
-from ..db import ScanDocument
+# from ..db import ScanDocument
 
 class IMAGE_PR:
-
-    def __init__(self, filename):
-        self.filename = filename
-        self.img = cv2.imread(filename)
+    def __init__(self, filename=None, byte_string=None):
+        if filename:
+            self.img = cv2.imread(filename)
+        elif byte_string:
+            nparr = np.fromstring(byte_string, np.uint8)
+            self.img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        else:
+            self.img = None
 
         (self.h, self.w, self.d) = self.img.shape
 
@@ -66,8 +71,17 @@ class IMAGE_PR:
         cv2.destroyAllWindows()
 
 if __name__ == '__main__':
-    qr_r = IMAGE_PR('../../test/IMG/ddd.jpg')
+
+    fd = open('../../test/IMG/qqq.jpg', "rb")
+    img_str = fd.read()
+    fd.close()
+    print(1)
+    qr_r = IMAGE_PR(byte_string=img_str)
+
+    # qr_r = IMAGE_PR('../../test/IMG/ddd.jpg')
     qr_code = qr_r.auto_find_qr_code()
+
+
     print(qr_code)
 
     # qr_r.show_img(qr_r.return_image_corner(qr_r.img, qr_r.TOP_LEFT) )
