@@ -9,9 +9,12 @@ class ReadyQR:
     LOWER_RIGHT = 'LOWER_RIGHT'
     TYPES_CORNER = (None, TOP_LEFT, TOP_RIGHT, LOWER_LEFT, LOWER_RIGHT)
 
-    def __init__(self, filename):
-        self.filename = filename
-        self.img = cv2.imread(filename)
+    def __init__(self, filename=None, byte_string=None):
+        if filename:
+            self.img = cv2.imread(filename)
+        elif byte_string:
+            self.img = cv2.imread(filename)
+
         (self.h, self.w, self.d) = self.img.shape
 
         print(type(self.img))
