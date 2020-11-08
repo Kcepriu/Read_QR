@@ -11,6 +11,9 @@ class IMAGE_PR:
         elif byte_string:
             nparr = np.frombuffer(byte_string, np.uint8)
             self.img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+            print('nparr', type(nparr))
+            print('byte_string', type(byte_string))
         else:
             self.img = None
 
@@ -78,6 +81,16 @@ if __name__ == '__main__':
 
     # qr_r.show_img(qr_r.return_image_corner(qr_r.img, qr_r.TOP_LEFT) )
     qr_r.resize_scan()
-    print(qr_r.h, qr_r.w)
-    qr_r.show_img(qr_r.img)
+    # print(qr_r.h, qr_r.w)
+    # qr_r.show_img(qr_r.img)
 
+    img_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
+    _, img_encode = cv2.imencode('.jpg', qr_r.img, img_param)
+
+    bufer = img_encode.tobytes()
+    print('img_encode', type(img_encode))
+    print('bufer', type(bufer))
+
+
+    new_qr_code = IMAGE_PR(byte_string=bufer)
+    new_qr_code.show_img(new_qr_code.img)
