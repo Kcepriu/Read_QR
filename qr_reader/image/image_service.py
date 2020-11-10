@@ -2,23 +2,18 @@ import cv2
 from pyzbar import pyzbar
 import numpy as np
 
-# from ..db import ScanDocument
-
 class IMAGE_PR:
     def __init__(self, filename=None, byte_string=None):
         if filename:
             self.img = cv2.imread(filename)
         elif byte_string:
+            print(11111, type(byte_string))
             nparr = np.frombuffer(byte_string, np.uint8)
             self.img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-            print('nparr', type(nparr))
-            print('byte_string', type(byte_string))
         else:
             self.img = None
 
         (self.h, self.w, self.d) = self.img.shape
-
 
     @staticmethod
     def decode_barcodes(_img):
@@ -30,7 +25,6 @@ class IMAGE_PR:
             return barcodeData
         else:
             return None
-
 
     def return_image_corner(self):
         return self.img[0:int(self.h * 0.2), int(self.w * 0.75):self.w]
@@ -50,12 +44,19 @@ class IMAGE_PR:
 
         return data_barcode
 
-    def resize_scan(self):
-        if self.h > 1280:
-            coef = 1280 / self.h
+    def resize_image(self, max_size=1280):
+        if self.h > max_size:
+            coef = max_size / self.h
             self.img = cv2.resize(self.img, (0,0), fx=coef, fy=coef)
             (self.h, self.w, self.d) = self.img.shape
 
+    @property
+    def image_to_byte(self):
+        img_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
+        _, img_encode = cv2.imencode('.jpeg', self.img, img_param)
+
+        pp = img_encode.tobytes()
+        return  pp
 
     @staticmethod
     def show_img(_img):

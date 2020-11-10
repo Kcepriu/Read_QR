@@ -23,8 +23,13 @@ class SaveDocumentBot(TeleBot):
             return
 
         document.file_path = message.file_path
+
         self.get_data_file(document, False)
+
         document.save()
+
+        document.get_qr_cod()
+
         return True
 
     # Отримуємо дані файлу із нету і зберігаємо в базі
@@ -34,17 +39,16 @@ class SaveDocumentBot(TeleBot):
 
         file = self.download_file(document.file_path)
 
-        document.data_file.put(file, content_type='image/jpeg')
+        document.data_file.put(file, content_type=document.mime_type)
+
         if save:
             document.save()
 
-
-
 #------------------------------------------
     def test_add(self):
-        doc = ScanDocument.objects(id='5fa40e4a60db69abd73fd0a0').get()
+        doc = ScanDocument.objects(id='5fa9508d3a2f548d40bc754b').get()
         if doc:
-            self.get_data_file(doc)
+            doc.get_qr_cod()
 
             print('OK')
 

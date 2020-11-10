@@ -26,9 +26,12 @@ def photo_message(message):
 def document_message(message):
     user = User.get_user(chat=message.chat)
 
+    mime_type = message.document.mime_type
+
+    if mime_type.find('image') == -1:
+        bot_instance.send_message_from_type(user, Text.DOCUMENT_NOT_TYPE_MESSAGE)
+        return
+
     document = bot_instance.add_document(user, message)
 
-    print(message.document)
-
-    text = f'{Text.DOCUMENT_MESSAGE} - "{message.document.file_name}"'
-    bot_instance.send_message_from_type(user, text)
+    bot_instance.send_message_from_type(user, Text.DOCUMENT_MESSAGE)
