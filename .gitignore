@@ -5,5 +5,3 @@ __pycache__/
 *.pem
 .idea/
 
-qr_reader/boot/config.py
-boot/config.py
