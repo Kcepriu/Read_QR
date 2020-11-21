@@ -23,11 +23,8 @@ class SaveDocumentBot(TeleBot):
             return
 
         document.file_path = message.file_path
-
         self.get_data_file(document, False)
-
         document.save()
-
         document.get_qr_cod()
 
         return True
@@ -36,11 +33,8 @@ class SaveDocumentBot(TeleBot):
     def get_data_file(self, document, save=True):
         if not document.file_path:
             return
-
         file = self.download_file(document.file_path)
-
         document.data_file.put(file, content_type=document.mime_type)
-
         if save:
             document.save()
 

@@ -1,41 +1,80 @@
-from flask import request
+from flask import Response, abort
 from flask_restful import Resource
-import tempfile
-import os
+from mongoengine.errors import ValidationError, OperationError
+import json
 
+from ..db import ScanDocument
+from .schemas import QR_Schema
+from ..bot import bot_instance
 
+class Files_Resource(Resource):
+    def get(self, id_document):
+        try:
+            obj = ScanDocument.objects.get(id=id_document)
+        except ValidationError:
+            abort(404)
 
-class QR_Resource(Resource):
-    def __init__(self):
-        self.temp_dir = tempfile.mkdtemp(prefix='qr_ready-prefix_')
+        mimetype = obj.mime_type
+        content = obj.data_file.read()
 
-    def get(self):
-        return {'Error': 'Not Unique'}
+        resp = Response(content, mimetype=mimetype)
+        return resp
 
     def post(self):
         return {'Error': 'Not Unique'}
-        # image_file = request.files['file']
-        # temp_name = next(tempfile._get_candidate_names())
-        # file_path = os.path.join(self.temp_dir, temp_name)
-        # image_file.save(file_path)
-        # qr_r = ReadyQR(file_path)
-        # qr_code = qr_r.auto_find_qr_code()
-        # if qr_code :
-        #     return(qr_code)
-        # else:
-        #     return {'result': 'Not Identified'}
 
-        # try:
-        #     image_file = request.files['file']
-        #     temp_name = next(tempfile._get_candidate_names())
-        #     image_file.save(os.path.join(self.temp_dir, temp_name))
-        #     return {'result': 'OK'}
-        #
-        # except:
-        #     return {'Error': 'Not Unique'}
+    def put(self, id_document):
+        try:
+            obj = ScanDocument.objects.get(id=id_document)
+        except ValidationError:
+            abort(404)
+
+        if not obj.data_file:
+            if not bot_instance.get_url_file(obj):
+                return {'status': 'ERROR'}
+
+        if obj.get_qr_cod():
+            return {'status': 'OK'}
+        else:
+            return {'status': 'ERROR'}
+
+
+    def delete(self, id_document):
+        try:
+            obj = ScanDocument.objects.get(id=id_document)
+        except ValidationError:
+            abort(404)
+
+        try:
+            obj.delete()
+        except OperationError as err:
+            return {'error': err.messages}
+
+        return {'status': 'OK'}
+
+
+class QR_Info_Resource(Resource):
+    def get(self, id_document=None):
+        if id_document:
+            try:
+                obj = ScanDocument.objects(id=id_document).get()
+                dump_obj = QR_Schema().dump(obj)
+            except ValidationError:
+                abort(404)
+        else:
+            obj = ScanDocument.objects()
+            dump_obj = QR_Schema().dump(obj, many=True)
+
+        r = Response(response=json.dumps(dump_obj, ensure_ascii=False), status=200, mimetype="application/json")
+        r.headers["Content-Type"] = "application/json; charset=utf-8"
+        return r
+
+    def post(self):
+        return {'Error': 'Not Unique'}
 
     def put(self):
         return {'Error': 'Not Unique'}
+
     def delete(self):
         return {'Error': 'Not Unique'}
 

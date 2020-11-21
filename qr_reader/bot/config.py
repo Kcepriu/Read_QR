@@ -2,3 +2,7 @@ import os
 
 # TOKEN = '1195166484:'
 TOKEN = os.environ.get('TOKEN_KEY')
+
+GLOBAL_IP = '213.159.251.123:8443'
+WEBHOOK_PRIFIX = '/tg'
+WEBHOOK_URL = f'https://{GLOBAL_IP}{WEBHOOK_PRIFIX}'

@@ -7,7 +7,6 @@ class IMAGE_PR:
         if filename:
             self.img = cv2.imread(filename)
         elif byte_string:
-            print(11111, type(byte_string))
             nparr = np.frombuffer(byte_string, np.uint8)
             self.img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         else:

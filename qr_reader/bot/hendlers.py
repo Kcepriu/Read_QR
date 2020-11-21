@@ -31,7 +31,6 @@ def document_message(message):
     if mime_type.find('image') == -1:
         bot_instance.send_message_from_type(user, Text.DOCUMENT_NOT_TYPE_MESSAGE)
         return
-
     document = bot_instance.add_document(user, message)
 
     bot_instance.send_message_from_type(user, Text.DOCUMENT_MESSAGE)

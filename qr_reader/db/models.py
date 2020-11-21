@@ -35,7 +35,6 @@ class InfoQR_Code(me.EmbeddedDocument):
 class ScanDocument(me.Document):
     user = me.ReferenceField(User, reverse_delete_rule=me.DENY)
     date = me.DateTimeField(default=datetime.now())
-    date_export_to_1c = me.DateTimeField()
 
     file_id = me.StringField(max_length=100)
     file_name = me.StringField(max_length=255)
@@ -47,8 +46,6 @@ class ScanDocument(me.Document):
 
     auto_determination = me.BooleanField(default=False)
     info_qr_code = me.EmbeddedDocumentField(InfoQR_Code)
-
-
 
 
     @classmethod
