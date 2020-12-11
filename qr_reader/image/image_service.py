@@ -63,34 +63,9 @@ class IMAGE_PR:
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+    def rotate_image(self, code_rotate=90):
+        cv2_code_rotate =  cv2.ROTATE_90_COUNTERCLOCKWISE if int(code_rotate) == 90 else cv2.ROTATE_180
+        self.img = cv2.rotate(self.img, cv2_code_rotate)
+
 if __name__ == '__main__':
-
-    fd = open('../../test/IMG/ddd.jpg', "rb")
-    img_str = fd.read()
-    fd.close()
-
-    qr_r = IMAGE_PR(byte_string=img_str)
-
-    # qr_r = IMAGE_PR('../../test/IMG/ddd.jpg')
-    qr_code = qr_r.auto_find_qr_code()
-
-
-    print(qr_code)
-
-    print(qr_r.h, qr_r.w)
-
-    # qr_r.show_img(qr_r.return_image_corner(qr_r.img, qr_r.TOP_LEFT) )
-    qr_r.resize_scan()
-    # print(qr_r.h, qr_r.w)
-    # qr_r.show_img(qr_r.img)
-
-    img_param = [int(cv2.IMWRITE_JPEG_QUALITY), 70]
-    _, img_encode = cv2.imencode('.jpg', qr_r.img, img_param)
-
-    bufer = img_encode.tobytes()
-    print('img_encode', type(img_encode))
-    print('bufer', type(bufer))
-
-
-    new_qr_code = IMAGE_PR(byte_string=bufer)
-    new_qr_code.show_img(new_qr_code.img)
+    pass

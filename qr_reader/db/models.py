@@ -19,7 +19,10 @@ class User(me.Document):
     def get_user(cls, chat):
         user = cls.objects(user_id=chat.id)
         if not user:
-            name = chat.last_name + ' ' + chat.first_name
+            try:
+                name = chat.last_name + ' ' + chat.first_name
+            except:
+                pass
             user = cls.objects.create(user_id=chat.id, name=name)
         else:
             user = user[0]

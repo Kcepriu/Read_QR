@@ -1,11 +1,14 @@
-from flask import Response, abort
+from flask import Response, abort, request,  flash, redirect
 from flask_restful import Resource
 from mongoengine.errors import ValidationError, OperationError
 import json
+import tempfile
+import time
 
 from ..db import ScanDocument
 from .schemas import QR_Schema
 from ..bot import bot_instance
+from ..image import IMAGE_PR
 
 class Files_Resource(Resource):
     def get(self, id_document):
@@ -37,7 +40,6 @@ class Files_Resource(Resource):
             return {'status': 'OK'}
         else:
             return {'status': 'ERROR'}
-
 
     def delete(self, id_document):
         try:
@@ -78,4 +80,31 @@ class QR_Info_Resource(Resource):
     def delete(self):
         return {'Error': 'Not Unique'}
 
- 
+
+class Rotate_Image(Resource):
+    def get(self):
+        return {'Error': 'Not Unique'}
+
+    def post(self, code_rotate=90):
+        try:
+            image_file = request.files['file']
+        except:
+            return {'Error': str(request.files)}
+
+        post_image = IMAGE_PR(byte_string=image_file.stream.read())
+        post_image.rotate_image(code_rotate)
+
+        content = post_image.image_to_byte
+
+        mimetype = image_file.mimetype
+        if mimetype == 'image / jpeg':
+            return {'Error': 'No type files'}
+
+        resp = Response(content, mimetype=mimetype)
+        return resp
+
+    def put(self):
+        return {'Error': 'Not Unique'}
+
+    def delete(self):
+        return {'Error': 'Not Unique'}
