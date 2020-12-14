@@ -22,7 +22,7 @@ class User(me.Document):
             try:
                 name = chat.last_name + ' ' + chat.first_name
             except:
-                pass
+                name = ""
             user = cls.objects.create(user_id=chat.id, name=name)
         else:
             user = user[0]
