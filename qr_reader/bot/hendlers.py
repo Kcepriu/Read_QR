@@ -28,7 +28,9 @@ def document_message(message):
 
     mime_type = message.document.mime_type
 
-    if mime_type.find('image') == -1:
+    print(mime_type)
+
+    if mime_type.find('image') == -1 and mime_type.find('pdf') == -1:
         bot_instance.send_message_from_type(user, Text.DOCUMENT_NOT_TYPE_MESSAGE)
         return
     document = bot_instance.add_document(user, message)

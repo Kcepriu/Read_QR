@@ -1,1 +1,1 @@
-from .image_service import IMAGE_PR
+from .image_service import IMAGE_PR, PDF_TO_JPEG

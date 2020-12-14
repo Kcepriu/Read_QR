@@ -1,6 +1,7 @@
 from telebot import TeleBot
 from telebot.apihelper import ApiTelegramException
 from ..db import User, ScanDocument, Text
+from ..image import PDF_TO_JPEG
 
 class SaveDocumentBot(TeleBot):
     # Відправляє повідомлення
@@ -33,8 +34,25 @@ class SaveDocumentBot(TeleBot):
     def get_data_file(self, document, save=True):
         if not document.file_path:
             return
+        mime_type = document.mime_type
         file = self.download_file(document.file_path)
-        document.data_file.put(file, content_type=document.mime_type)
+
+        if mime_type.find('pdf') != -1:
+            pdf_to_jpeg = PDF_TO_JPEG(file)
+
+            print(222222222222222222222222222)
+            print(type(file))
+
+            file = pdf_to_jpeg.convert_pdf_to_jpeg()
+
+            print(1111111111111111111111111)
+            print(type(file))
+            mime_type = 'image/jpeg'
+
+        if not file:
+            return
+
+        document.data_file.put(file, content_type=mime_type)
         if save:
             document.save()
 

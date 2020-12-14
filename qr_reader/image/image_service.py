@@ -1,6 +1,9 @@
 import cv2
-from pyzbar import pyzbar
 import numpy as np
+import io
+from pyzbar import pyzbar
+from pdf2image import convert_from_bytes
+
 
 class IMAGE_PR:
     def __init__(self, filename=None, byte_string=None):
@@ -66,6 +69,24 @@ class IMAGE_PR:
     def rotate_image(self, code_rotate=90):
         cv2_code_rotate =  cv2.ROTATE_90_COUNTERCLOCKWISE if int(code_rotate) == 90 else cv2.ROTATE_180
         self.img = cv2.rotate(self.img, cv2_code_rotate)
+
+class PDF_TO_JPEG:
+    def __init__(self, file):
+        self._file = file
+
+    def convert_pdf_to_jpeg(self):
+        images = convert_from_bytes(self._file, fmt="jpeg")
+
+
+        if images:
+            buf = io.BytesIO()
+            images[0].save(buf, format='JPEG')
+            byte_im = buf.getvalue()
+
+            return byte_im
+
+        return None
+
 
 if __name__ == '__main__':
     pass
